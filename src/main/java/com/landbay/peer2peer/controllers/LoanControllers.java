@@ -23,9 +23,10 @@ public class LoanControllers
         return loanServices.createLoan(loan);
     }
 
-    @RequestMapping(value = "/delete", method= RequestMethod.DELETE)
+    @RequestMapping(value = "/delete/{id}", method= RequestMethod.DELETE)
     public void deleteLoan(@PathVariable long id)
     {
+        System.out.println("ID : "+id);
         loanServices.deleteLoan(id);
     }
 
@@ -41,11 +42,23 @@ public class LoanControllers
         loanServices.investIntoLoan(loanInvestment);
     }
 
-
-
-
+    /**
+     * Validating the input for a loan
+     * @param loan
+     */
     private void validateLoan(Loan loan)
     {
-        // Do something
+        String name = loan.getName();
+        long amountRequired = loan.getAmountRequired();
+
+        if(name == null || name.isEmpty())
+        {
+            throw new IllegalArgumentException("Loan can not be validated - Name of customer is not provided");
+        }
+
+        if(amountRequired <= 0)
+        {
+            throw new IllegalArgumentException("Loan can not be validated - Amount required is invalid ["+amountRequired+"]");
+        }
     }
 }

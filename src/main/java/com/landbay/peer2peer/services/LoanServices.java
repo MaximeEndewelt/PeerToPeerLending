@@ -57,7 +57,7 @@ public class LoanServices
         loanInvestmentRepository.save(loanInvestment);
     }
 
-    @Transactional
+  //  @Transactional
     public void deleteLoan(long id)
     {
         loanRepository.deleteById(id);
