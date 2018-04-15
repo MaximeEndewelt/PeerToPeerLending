@@ -11,8 +11,9 @@ import java.util.List;
 
 public interface ILoanInvestmentRepository extends JpaRepository<LoanInvestment, Long>
 {
-    @Query(value = " SELECT * FROM LoanInvestment WHERE 'loan_id' =:loanId", nativeQuery = true)
-    public List<LoanInvestment> findAllByLoanId(long loanId);
+//    @Query(value = " SELECT l.amount, l.lenderName, l.loanId, l.interests, l.rateType  FROM LoanInvestment l WHERE l.loanId = :loanId")
+    @Query(value = " SELECT l  FROM LoanInvestment l WHERE l.loanId = :loanId")
+    public List<LoanInvestment> findAllByLoanId(@Param("loanId") long loanId);
 
     @Transactional
     @Modifying

@@ -1,18 +1,16 @@
 package com.landbay.peer2peer.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.*;
 
 @Entity
 public class Loan
 {
+    @JsonIgnore
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
-    private String name;
 
     @Column(name = "amount_required")
     private long amountRequired;
@@ -27,10 +25,6 @@ public class Loan
         return id;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public long getAmountRequired() {
         return amountRequired;
     }
@@ -41,10 +35,6 @@ public class Loan
 
     public double getTotalRepayment() {
         return totalRepayment;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public void setAmountRequired(long amountRequired) {

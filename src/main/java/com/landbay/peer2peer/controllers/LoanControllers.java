@@ -24,22 +24,10 @@ public class LoanControllers
     }
 
     @RequestMapping(value = "/delete/{id}", method= RequestMethod.DELETE)
-    public void deleteLoan(@PathVariable long id)
+    public void deleteLoan(@PathVariable("id") long id)
     {
         System.out.println("ID : "+id);
         loanServices.deleteLoan(id);
-    }
-
-    @RequestMapping(value = "/get", method = RequestMethod.GET)
-    public List<LoanInvestment> getLoan(@PathVariable long id)
-    {
-        return loanServices.getLoan(id);
-    }
-
-    @RequestMapping(value = "/invest", method= RequestMethod.POST)
-    public void investIntoLoan(LoanInvestment loanInvestment)
-    {
-        loanServices.investIntoLoan(loanInvestment);
     }
 
     /**
@@ -48,14 +36,7 @@ public class LoanControllers
      */
     private void validateLoan(Loan loan)
     {
-        String name = loan.getName();
         long amountRequired = loan.getAmountRequired();
-
-        if(name == null || name.isEmpty())
-        {
-            throw new IllegalArgumentException("Loan can not be validated - Name of customer is not provided");
-        }
-
         if(amountRequired <= 0)
         {
             throw new IllegalArgumentException("Loan can not be validated - Amount required is invalid ["+amountRequired+"]");
