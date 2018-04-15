@@ -4,10 +4,13 @@ import com.landbay.peer2peer.entities.LoanDetails;
 import com.landbay.peer2peer.entities.LoanInvestment;
 import com.landbay.peer2peer.services.LoanServices;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
+/**
+ * A Rest Controller responsible for investment operations
+ */
 @RequestMapping(value = "/investment")
 @RestController
 public class InvestmentController
@@ -16,41 +19,51 @@ public class InvestmentController
     @Autowired
     private LoanServices loanServices;
 
+    /**
+     * A GET endpoint returning the loan details
+     * containing investments
+     * @param id the loan Id
+     * @return
+     */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public LoanDetails getLoanDetails(@PathVariable("id") long id)
+    public ResponseEntity<?> getLoanDetails(@PathVariable("id") long id)
     {
         LoanDetails loanDetails = null;
         try
         {
             loanDetails = loanServices.getLoan(id);
+            return ResponseEntity.status(HttpStatus.OK).body(loanDetails);
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            return ExceptionConverter.convertException(e);
         }
 
-        return loanDetails;
     }
 
+    /**
+     * A POST endpoint creating a new investment into a loan
+     * @param loanInvestment
+     */
     @RequestMapping(method= RequestMethod.POST)
-    public void investIntoLoan(@RequestBody LoanInvestment loanInvestment)
+    public ResponseEntity<?> investIntoLoan(@RequestBody LoanInvestment loanInvestment)
     {
-        System.out.println("Lender name :" +loanInvestment.getLenderName());
-        System.out.println("Loan id :" +loanInvestment.getLoanId());
-        System.out.println("Amount :" +loanInvestment.getAmount());
-        System.out.println("Rate type :" +loanInvestment.getRateType());
-
         try
         {
             validateInvestment(loanInvestment);
             loanServices.investIntoLoan(loanInvestment);
+            return new ResponseEntity<>(HttpStatus.OK);
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            return ExceptionConverter.convertException(e);
         }
     }
 
+    /**
+     * Validation of input parameters
+     * @param investment the input parameter
+     */
     private void validateInvestment(LoanInvestment investment)
     {
         String lenderName = investment.getLenderName();

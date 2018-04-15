@@ -2,6 +2,9 @@ package com.landbay.peer2peer.entities;
 
 import java.util.List;
 
+/**
+ * Entity representing loan details
+ */
 public class LoanDetails
 {
     private Loan loan;

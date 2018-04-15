@@ -15,6 +15,9 @@ import java.math.RoundingMode;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Service used for loan and investments operations
+ */
 @Service
 public class LoanServices
 {
@@ -27,6 +30,11 @@ public class LoanServices
     @Autowired
     private ILenderRepository lenderRepository;
 
+    /**
+     * Save a loan in the DB
+     * @param loan the given loan
+     * @return the loan updated, with its ID
+     */
     public Loan createLoan(Loan loan)
     {
         loan.setAmountInvested(0.);
@@ -36,6 +44,12 @@ public class LoanServices
         return savedLoan;
     }
 
+    /**
+     * Fetch a loan and its investments
+     * @param id the loan Id
+     * @return a loan and its investments
+     * @throws Exception if the loan is not found
+     */
     public LoanDetails getLoan(long id) throws Exception
     {
         LoanDetails loanDetails = null;
@@ -50,6 +64,12 @@ public class LoanServices
         return loanDetails;
     }
 
+    /**
+     * Save an investment into a loan in the DB
+     * @param loanInvestment
+     * @throws Exception if the loan doesn't exist or
+     * if the investment is not possible
+     */
     public void investIntoLoan(LoanInvestment loanInvestment) throws Exception
     {
         //
@@ -64,13 +84,22 @@ public class LoanServices
     }
 
   //  @Transactional
+
+    /**
+     * Delete a loan from the DB
+     * @param id
+     */
     public void deleteLoan(long id)
     {
         loanRepository.deleteById(id);
         loanInvestmentRepository.deleteByLoanId(id);
     }
 
-
+    /**
+     * Check if an investment is valid and return the related loan
+     * @param investment
+     * @throws Exception if the investment is not valid
+     */
     private Loan validateInvestment(LoanInvestment investment) throws Exception
     {
         Loan loan = getLoanIfExists(investment.getLoanId());
@@ -94,6 +123,10 @@ public class LoanServices
         return loan;
     }
 
+    /**
+     * Create a lender if he doesn't already exists
+     * @param name the name of the lender
+     */
     private void createLender(String name)
     {
         // Needs to use object because it can be null
@@ -106,6 +139,11 @@ public class LoanServices
         }
     }
 
+    /**
+     * Update the loan by applying investment
+     * @param loanInvestment
+     * @throws Exception if the investment is not valid
+     */
     private void updateLoan(LoanInvestment loanInvestment) throws Exception
     {
         //
@@ -121,6 +159,11 @@ public class LoanServices
         loanRepository.save(loan);
     }
 
+    /**
+     * Check if a loan exists with the given ID
+     * @param id the loan ID
+     * @return the loan or null if it does not exists
+     */
     private Loan getLoanIfExists(long id)
     {
         Optional<Loan> loanOptional = loanRepository.findById(id);
@@ -133,18 +176,19 @@ public class LoanServices
         return loan;
     }
 
+    /**
+     * Calculate investment interests and repayment
+     * @param investment
+     * @param loan
+     */
     private void calculateInvestmentRepayment(LoanInvestment investment, Loan loan)
     {
         //
         // I assume that the the rate is per year, so dividing that by 365
         //
-        System.out.println("Raw Period : "+ investment.getInvestmentPeriod()
-        );
         double period = investment.getInvestmentPeriod() / 365.;
-        System.out.println("Period : "+period);
         double amount = investment.getAmount();
         double decimalRate = LoanInvestment.ERateType.EFixedRate.getRate() / 100 ;
-        System.out.println("Rate : "+decimalRate);
 
         //
         // The total amount is calculated following this formula A = P(1 + rt)

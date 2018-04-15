@@ -5,6 +5,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import java.util.HashMap;
 
+/**
+ * Entity representing a loan investments
+ */
 @Entity
 @Table(name = "loaninvestment")
 public class LoanInvestment
